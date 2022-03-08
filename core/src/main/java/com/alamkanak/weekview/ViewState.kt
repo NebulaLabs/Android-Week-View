@@ -59,6 +59,7 @@ internal class ViewState {
     // Time column
     var timeColumnPadding: Int = 0
     var timeColumnHoursInterval: Double = 0.0
+    var timeColumnRangeValue: Float = 1.0f
 
     var headerPadding: Float = 0f
 

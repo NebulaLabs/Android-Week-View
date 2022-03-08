@@ -11,7 +11,7 @@ internal class TimeColumnRenderer(
     private val timeLabelLayouts = SparseArray<StaticLayout>()
 
     init {
-        println("TATA init")
+        updateTimeLabels()
     }
 
     override fun onSizeChanged(width: Int, height: Int) {
@@ -35,7 +35,7 @@ internal class TimeColumnRenderer(
 
         for (hour in displayedHours) {
             val heightOfHour = hourHeight * (hour - minHour)
-            val topMargin = headerHeight + currentOrigin.y + heightOfHour.toInt()
+            val topMargin = headerHeight*timeColumnRangeValue + currentOrigin.y + heightOfHour
 
             val isOutsideVisibleArea = topMargin > bottom
             if (isOutsideVisibleArea) {

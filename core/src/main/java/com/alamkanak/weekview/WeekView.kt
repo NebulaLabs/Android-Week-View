@@ -445,6 +445,14 @@ class WeekView @JvmOverloads constructor(
             invalidate()
         }
 
+    @PublicApi
+    var timeColumnRangeValue: Float
+        get() = viewState.timeColumnRangeValue
+        set(value) {
+            viewState.timeColumnRangeValue = value
+            invalidate()
+        }
+
     /*
      ***********************************************************************************************
      *

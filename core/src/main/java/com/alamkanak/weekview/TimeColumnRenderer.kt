@@ -33,7 +33,7 @@ internal class TimeColumnRenderer(
 
         for (hour in displayedHours) {
             val heightOfHour = hourHeight * (hour - minHour)
-            val topMargin = headerHeight + currentOrigin.y + heightOfHour
+            val topMargin = headerHeight*timeColumnRangeValue + currentOrigin.y + heightOfHour
 
             val isOutsideVisibleArea = topMargin > bottom
             if (isOutsideVisibleArea) {

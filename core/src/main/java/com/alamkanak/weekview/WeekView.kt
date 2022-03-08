@@ -438,7 +438,7 @@ class WeekView @JvmOverloads constructor(
      * Returns the interval in which time labels are displayed in the time column.
      */
     @PublicApi
-    var timeColumnHoursInterval: Int
+    var timeColumnHoursInterval: Double
         get() = viewState.timeColumnHoursInterval
         set(value) {
             viewState.timeColumnHoursInterval = value

@@ -13,7 +13,7 @@ import android.view.View
 import android.view.accessibility.AccessibilityManager
 import androidx.annotation.RequiresApi
 import androidx.core.view.ViewCompat
-import java.util.Calendar
+import java.util.*
 import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -85,7 +85,12 @@ class WeekView @JvmOverloads constructor(
     private val renderers: List<Renderer> = listOf(
         TimeColumnRenderer(viewState),
         CalendarRenderer(viewState, eventChipsCacheProvider),
-        HeaderRenderer(context, viewState, eventChipsCacheProvider, onHeaderHeightChanged = this::invalidate)
+        HeaderRenderer(
+            context,
+            viewState,
+            eventChipsCacheProvider,
+            onHeaderHeightChanged = this::invalidate
+        )
     )
 
     // We use width and height instead of view.isLaidOut(), because the latter seems to
@@ -1414,6 +1419,7 @@ class WeekView @JvmOverloads constructor(
             val eventChip = findHitEvent(x, y) ?: return false
             val data = findEventData(id = eventChip.eventId) ?: return false
             onEventClick(data, eventChip.bounds)
+            onEventClick(data)
             return true
         }
 
@@ -1430,7 +1436,8 @@ class WeekView @JvmOverloads constructor(
                 candidates.isEmpty() -> null
                 // Two events hit. This is most likely because an all-day event was clicked, but a
                 // single event is rendered underneath it. We return the all-day event.
-                candidates.size == 2 -> candidates.first { it.event.isAllDay }.takeUnless { it.isHidden }
+                candidates.size == 2 -> candidates.first { it.event.isAllDay }
+                    .takeUnless { it.isHidden }
                 else -> candidates.first().takeUnless { it.isHidden }
             }
         }

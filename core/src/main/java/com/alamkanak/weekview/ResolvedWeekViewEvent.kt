@@ -61,7 +61,7 @@ internal sealed class ResolvedWeekViewEntity {
     internal fun isWithin(
         minHour: Int,
         maxHour: Int
-    ): Boolean = startTime.hour >= minHour && endTime.hour <= maxHour
+    ): Boolean = startTime.hour >= minHour || endTime.hour <= maxHour
 
     internal fun collidesWith(other: ResolvedWeekViewEntity): Boolean {
         if (isAllDay != other.isAllDay) {

@@ -205,9 +205,9 @@ private class BackgroundGridDrawer(
         }
     }
 
-    private fun Canvas.drawHourLine(hour: Int) {
+    private fun Canvas.drawHourLine(hour: Double) {
         val heightOfHour = (viewState.hourHeight * (hour - viewState.minHour))
-        val verticalOffset = viewState.headerHeight + viewState.currentOrigin.y + heightOfHour
+        val verticalOffset = (viewState.headerHeight + viewState.currentOrigin.y + heightOfHour).toFloat()
         val horizontalOffset = if (viewState.isLtr) viewState.timeColumnWidth else 0f
 
         drawHorizontalLine(

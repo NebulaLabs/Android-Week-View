@@ -7,8 +7,10 @@ import android.graphics.RectF
 import android.graphics.Typeface
 import android.os.Build
 import android.text.TextPaint
+import android.util.Range
 import android.view.View
-import java.util.Calendar
+import androidx.core.util.toRange
+import java.util.*
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.max
@@ -47,7 +49,8 @@ internal class ViewState {
     // Drawing context
     private var startPixel: Float = 0f
     val startPixels: MutableList<Float> = mutableListOf()
-    val dateRange: MutableList<Calendar> = createDateRange(firstVisibleDate).validate(this).toMutableList()
+    val dateRange: MutableList<Calendar> =
+        createDateRange(firstVisibleDate).validate(this).toMutableList()
     val dateRangeWithStartPixels: MutableList<Pair<Calendar, Float>> = mutableListOf()
 
     // Drag & drop
@@ -55,7 +58,8 @@ internal class ViewState {
 
     // Time column
     var timeColumnPadding: Int = 0
-    var timeColumnHoursInterval: Int = 0
+    var timeColumnHoursInterval: Double = 0.0
+    var timeColumnRangeValue: Float = 1.0f
 
     var headerPadding: Float = 0f
 
@@ -194,7 +198,8 @@ internal class ViewState {
     }
 
     var timeFormatter: TimeFormatter = { hour ->
-        val date = now().withTime(hour = hour, minutes = 0)
+        val minutes = (hour - hour.toInt()) * 60
+        val date = now().withTime(hour = hour.toInt(), minutes = minutes.toInt())
         defaultTimeFormatter().format(date.time)
     }
 
@@ -279,16 +284,31 @@ internal class ViewState {
     val minutesPerDay: Int
         get() = hoursPerDay * 60
 
-    private val timeRange: IntRange
+    private val timeRange: Range<Double>
         get() {
             val includeMidnightHour = showTimeColumnHourSeparators
-            val padding = if (includeMidnightHour) 0 else timeColumnHoursInterval
+            val padding = if (includeMidnightHour) 0.0 else timeColumnHoursInterval
             val startHour = minHour + padding
-            return startHour until maxHour
+            return startHour.rangeTo(maxHour.toDouble()).toRange()
         }
 
-    val displayedHours: IntProgression
-        get() = timeRange step timeColumnHoursInterval
+    val displayedHours: List<Double>
+        get() {
+            val minimumTime = timeRange.lower
+            val maximumTime = timeRange.upper
+
+            val interval = timeColumnHoursInterval
+            val finalArrayWithInterval = mutableListOf<Double>()
+            var timeToAdd = minimumTime
+
+            while (timeToAdd < maximumTime) {
+                finalArrayWithInterval.add(timeToAdd)
+                timeToAdd += interval
+            }
+
+            if (!finalArrayWithInterval.contains(maximumTime)) finalArrayWithInterval.add(maximumTime)
+            return finalArrayWithInterval
+        }
 
     private val _firstVisibleHour: Float
         get() = minHour + (currentOrigin.y * -1 / hourHeight)

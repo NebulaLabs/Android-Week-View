@@ -303,7 +303,7 @@ internal fun defaultDateFormatter(
     else -> SimpleDateFormat("EEEEE M/dd", Locale.getDefault()) // first character
 }
 
-internal fun defaultTimeFormatter(): SimpleDateFormat = SimpleDateFormat("hh a", Locale.getDefault())
+internal fun defaultTimeFormatter(): SimpleDateFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
 
 internal fun Calendar.format(): String {
     val sdf = SimpleDateFormat.getDateTimeInstance()

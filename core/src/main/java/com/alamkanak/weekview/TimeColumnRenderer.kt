@@ -33,7 +33,8 @@ internal class TimeColumnRenderer(
 
         for (hour in displayedHours) {
             val heightOfHour = hourHeight * (hour - minHour)
-            val topMargin = headerHeight + currentOrigin.y + heightOfHour
+            val topMargin =
+                (headerHeight * timeColumnRangeValue + currentOrigin.y + heightOfHour).toFloat()
 
             val isOutsideVisibleArea = topMargin > bottom
             if (isOutsideVisibleArea) {
@@ -47,7 +48,7 @@ internal class TimeColumnRenderer(
                 y += timeColumnTextHeight / 2 + hourSeparatorPaint.strokeWidth + timeColumnPadding
             }
 
-            val label = timeLabelLayouts[hour]
+            val label = timeLabelLayouts[displayedHours.indexOf(hour)]
             val x = if (viewState.isLtr) {
                 bounds.right - viewState.timeColumnPadding
             } else {
@@ -55,11 +56,11 @@ internal class TimeColumnRenderer(
             }
 
             canvas.withTranslation(x, y) {
-                label.draw(this)
+                label?.draw(this)
             }
 
             if (showTimeColumnHourSeparators && hour > 0) {
-                val j = hour - 1
+                val j = hour.toInt() - 1
                 hourLines[j * 4] = x
                 hourLines[j * 4 + 1] = topMargin
                 hourLines[j * 4 + 2] = x + timeColumnWidth
@@ -88,10 +89,11 @@ internal class TimeColumnRenderer(
 
         val textLayouts = mutableListOf<StaticLayout>()
 
-        for (hour in displayedHours) {
-            val textLayout = timeFormatter(hour).toTextLayout(timeColumnTextPaint, width = Int.MAX_VALUE)
+        displayedHours.forEachIndexed { index, hour ->
+            val textLayout =
+                timeFormatter(hour).toTextLayout(timeColumnTextPaint, width = Int.MAX_VALUE)
             textLayouts += textLayout
-            timeLabelLayouts.put(hour, textLayout)
+            timeLabelLayouts.put(index, textLayout)
         }
 
         val maxLineLength = textLayouts.maxOfOrNull { it.maxLineLength } ?: 0f

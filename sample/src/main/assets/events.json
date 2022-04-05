@@ -70,6 +70,16 @@
         "is_all_day": false
     },
     {
+        "title": "My All Day Event - 1 minute",
+        "location": "Location 8",
+        "day_of_month": 5,
+        "start_time": "00:00",
+        "duration": 1439,
+        "color": "#59DBE0",
+        "is_canceled": false,
+        "is_all_day": false
+    },
+    {
         "title": "Event 8",
         "location": "Location 8",
         "day_of_month": 5,

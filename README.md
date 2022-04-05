@@ -1,4 +1,4 @@
-Android Week View
+Android Week View (FORK)
 =================
 
 **Android Week View** is an Android library for displaying highly customizable calendar views within your app.
@@ -7,6 +7,8 @@ Android Week View
 
 Features
 ---------
+* Allows the use of minutes instead of just hours.
+* Allows the customization of the time labels position.
 * Display single-day or multi-day calendar views in your app
 * Extensive styling customization possible
 * Supports JodaTime, ThreeTenABP, and the Java 8 Date API

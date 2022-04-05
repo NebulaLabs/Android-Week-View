@@ -5,7 +5,7 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.text.StaticLayout
 import androidx.collection.ArrayMap
-import java.util.Calendar
+import java.util.*
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -57,7 +57,9 @@ private class SingleEventsUpdater(
             }
 
             val eventChips = chipsCache?.normalEventChipsByDate(date).orEmpty().filter {
-                it.event.isWithin(viewState.minHour, viewState.maxHour)
+                val isWithin = it.event.isWithin(viewState.minHour, viewState.maxHour)
+                println("" + it.event.startTime.hour + " --- " + it.event.endTime.hour + it.event.title + " --- " + isWithin)
+                return@filter isWithin
             }
 
             eventChips.calculateBounds(startPixel = modifiedStartPixel)

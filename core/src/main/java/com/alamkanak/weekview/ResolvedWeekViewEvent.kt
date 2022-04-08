@@ -1,7 +1,7 @@
 package com.alamkanak.weekview
 
 import android.content.Context
-import java.util.Calendar
+import java.util.*
 import kotlin.math.roundToInt
 
 internal sealed class ResolvedWeekViewEntity {
@@ -61,7 +61,7 @@ internal sealed class ResolvedWeekViewEntity {
     internal fun isWithin(
         minHour: Int,
         maxHour: Int
-    ): Boolean = (startTime.hour..endTime.hour intersect minHour..maxHour).isNotEmpty()
+    ): Boolean = startTime.hour in minHour..maxHour || endTime.hour in minHour..maxHour
 
     internal fun collidesWith(other: ResolvedWeekViewEntity): Boolean {
         if (isAllDay != other.isAllDay) {

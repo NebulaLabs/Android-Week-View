@@ -57,9 +57,7 @@ private class SingleEventsUpdater(
             }
 
             val eventChips = chipsCache?.normalEventChipsByDate(date).orEmpty().filter {
-                val isWithin = it.event.isWithin(viewState.minHour, viewState.maxHour)
-                println("" + it.event.startTime.hour + " --- " + it.event.endTime.hour + it.event.title + " --- " + isWithin)
-                return@filter isWithin
+                return@filter it.event.isWithin(viewState.minHour, viewState.maxHour)
             }
 
             eventChips.calculateBounds(startPixel = modifiedStartPixel)

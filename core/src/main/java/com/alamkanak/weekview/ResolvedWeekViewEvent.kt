@@ -64,9 +64,10 @@ internal sealed class ResolvedWeekViewEntity {
     ): Boolean {
         val startTimeIsInRange = startTime.hour in minHour..maxHour
         val endTimeIsInRange = endTime.hour in minHour..maxHour
-        val eventStartsBeforeAndEndsAfterLimits = (startTime.hour..endTime.hour intersect minHour..maxHour).isNotEmpty()
+        val eventHoursStartBeforeAndEndAfterLimits = (startTime.hour..endTime.hour intersect minHour..maxHour).isNotEmpty()
+        val eventIsMultiDay = endTime.toEpochDays() - startTime.toEpochDays() > 0
 
-        return startTimeIsInRange || endTimeIsInRange || eventStartsBeforeAndEndsAfterLimits
+        return startTimeIsInRange || endTimeIsInRange || eventHoursStartBeforeAndEndAfterLimits || eventIsMultiDay
     }
 
     internal fun collidesWith(other: ResolvedWeekViewEntity): Boolean {

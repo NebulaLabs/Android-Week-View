@@ -1,9 +1,7 @@
 package com.alamkanak.weekview
 
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
-import java.util.TimeZone
+import java.util.*
 import kotlin.math.roundToInt
 
 internal const val DAY_IN_MILLIS = 1000L * 60L * 60L * 24L
@@ -149,7 +147,7 @@ internal val Calendar.isBeforeToday: Boolean
 internal val Calendar.isToday: Boolean
     get() = isSameDate(today())
 
-internal fun Calendar.toEpochDays(): Int = (atStartOfDay.timeInMillis / DAY_IN_MILLIS).toInt()
+internal fun Calendar.toEpochDays(): Int = (withTimeAtStartOfPeriod(12).timeInMillis / DAY_IN_MILLIS).toInt()
 
 internal infix fun Calendar.minutesUntil(other: Calendar): Minutes {
     val diff = (timeInMillis - other.timeInMillis) / 60_000

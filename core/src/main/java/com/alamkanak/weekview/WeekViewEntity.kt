@@ -1,10 +1,11 @@
 package com.alamkanak.weekview
 
+import android.graphics.Bitmap
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.annotation.Dimension
-import java.util.Calendar
+import java.util.*
 
 /**
  * Encapsulates all information necessary to render an entity in [WeekView]. This entity can be
@@ -20,6 +21,7 @@ sealed class WeekViewEntity {
         internal val subtitleResource: TextResource? = null,
         internal val isAllDay: Boolean = false,
         internal val style: Style = Style(),
+        internal val icon: Bitmap? = null,
         internal val data: T
     ) : WeekViewEntity() {
 
@@ -31,6 +33,7 @@ sealed class WeekViewEntity {
             private var startTime: Calendar? = null
             private var endTime: Calendar? = null
             private var style: Style? = null
+            private var icon: Bitmap? = null
             private var isAllDay: Boolean = false
 
             @PublicApi
@@ -82,6 +85,12 @@ sealed class WeekViewEntity {
             }
 
             @PublicApi
+            fun setIcon(icon: Bitmap?): Builder<T> {
+                this.icon = icon
+                return this
+            }
+
+            @PublicApi
             fun setAllDay(isAllDay: Boolean): Builder<T> {
                 this.isAllDay = isAllDay
                 return this
@@ -95,7 +104,7 @@ sealed class WeekViewEntity {
                 val endTime = checkNotNull(endTime) { "endTime == null" }
                 val data = checkNotNull(data) { "data == null" }
                 val style = this.style ?: Style()
-                return Event(id, title, startTime, endTime, subtitle, isAllDay, style, data)
+                return Event(id, title, startTime, endTime, subtitle, isAllDay, style, icon, data)
             }
         }
     }
@@ -106,7 +115,8 @@ sealed class WeekViewEntity {
         internal val subtitleResource: TextResource? = null,
         internal val startTime: Calendar = now(),
         internal val endTime: Calendar = now(),
-        internal val style: Style = Style()
+        internal val style: Style = Style(),
+        internal val icon: Bitmap? = null
     ) : WeekViewEntity() {
 
         class Builder {
@@ -117,6 +127,7 @@ sealed class WeekViewEntity {
             private var startTime: Calendar? = null
             private var endTime: Calendar? = null
             private var style: Style? = null
+            private var icon: Bitmap? = null
 
             @PublicApi
             fun setId(id: Long): Builder {
@@ -167,13 +178,20 @@ sealed class WeekViewEntity {
             }
 
             @PublicApi
+            fun setIcon(icon: Bitmap): Builder {
+                this.icon = icon
+                return this
+            }
+
+            @PublicApi
             fun build(): WeekViewEntity {
                 val id = checkNotNull(id) { "id == null" }
                 val title = title ?: TextResource.Value(text = "")
                 val startTime = checkNotNull(startTime) { "startTime == null" }
                 val endTime = checkNotNull(endTime) { "endTime == null" }
                 val style = style ?: Style()
-                return BlockedTime(id, title, subtitle, startTime, endTime, style)
+                val icon = icon
+                return BlockedTime(id, title, subtitle, startTime, endTime, style, icon)
             }
         }
     }

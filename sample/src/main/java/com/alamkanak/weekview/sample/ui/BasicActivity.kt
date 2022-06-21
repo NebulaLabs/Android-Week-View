@@ -1,28 +1,27 @@
 package com.alamkanak.weekview.sample.ui
 
+import android.graphics.Bitmap
 import android.graphics.RectF
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.graphics.drawable.toBitmap
 import com.alamkanak.weekview.WeekViewEntity
 import com.alamkanak.weekview.jsr310.WeekViewPagingAdapterJsr310
 import com.alamkanak.weekview.jsr310.setDateFormatter
+import com.alamkanak.weekview.sample.R
 import com.alamkanak.weekview.sample.data.model.CalendarEntity
 import com.alamkanak.weekview.sample.data.model.toWeekViewEntity
 import com.alamkanak.weekview.sample.databinding.ActivityBasicBinding
+import com.alamkanak.weekview.sample.util.*
 import com.alamkanak.weekview.sample.util.GenericAction.ShowSnackbar
-import com.alamkanak.weekview.sample.util.defaultDateTimeFormatter
-import com.alamkanak.weekview.sample.util.genericViewModel
-import com.alamkanak.weekview.sample.util.setupWithWeekView
-import com.alamkanak.weekview.sample.util.showToast
-import com.alamkanak.weekview.sample.util.subscribeToEvents
-import com.alamkanak.weekview.sample.util.yearMonthsBetween
 import com.google.android.material.snackbar.Snackbar
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
-import java.util.Locale
+import java.util.*
 
 class BasicActivity : AppCompatActivity() {
 
@@ -54,7 +53,15 @@ class BasicActivity : AppCompatActivity() {
         }
 
         viewModel.viewState.observe(this) { viewState ->
-            adapter.submitList(viewState.entities)
+            adapter.submitList(viewState.entities.map {
+                when (it) {
+                    /* Add a drawable to the Events */
+                    is CalendarEntity.Event -> it.copy(
+                        icon = AppCompatResources.getDrawable(this, R.drawable.onexp_logo)?.toBitmap(75, 75, Bitmap.Config.RGB_565)
+                    )
+                    is CalendarEntity.BlockedTimeSlot -> it
+                }
+            })
         }
 
         viewModel.actions.subscribeToEvents(this) { action ->

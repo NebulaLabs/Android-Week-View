@@ -1,7 +1,7 @@
 package com.alamkanak.weekview
 
 import android.graphics.RectF
-import java.util.Calendar
+import java.util.*
 
 /**
  * This class encapsulates a [ResolvedWeekViewEntity] and its visual representation, a [RectF] which

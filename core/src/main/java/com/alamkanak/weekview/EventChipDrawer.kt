@@ -1,9 +1,6 @@
 package com.alamkanak.weekview
 
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.RectF
+import android.graphics.*
 import android.text.StaticLayout
 
 internal class EventChipDrawer(
@@ -22,7 +19,8 @@ internal class EventChipDrawer(
     internal fun draw(
         eventChip: EventChip,
         canvas: Canvas,
-        textLayout: StaticLayout?
+        textLayout: StaticLayout?,
+        iconLayout: Bitmap?
     ) = with(canvas) {
         val entity = eventChip.event
         val bounds = eventChip.bounds
@@ -53,9 +51,8 @@ internal class EventChipDrawer(
             drawCornersForMultiDayEvents(eventChip, cornerRadius)
         }
 
-        if (textLayout != null) {
-            drawEventTitle(eventChip, textLayout)
-        }
+        if (textLayout != null) drawEventTitle(eventChip, textLayout)
+        if (iconLayout != null) drawEventIcon(eventChip, iconLayout)
     }
 
     private fun Canvas.drawCornersForMultiDayEvents(
@@ -137,20 +134,30 @@ internal class EventChipDrawer(
     ) {
         val bounds = eventChip.bounds
 
-        val horizontalOffset = if (viewState.isLtr) {
-            bounds.left + viewState.eventPaddingHorizontal
-        } else {
-            bounds.right - viewState.eventPaddingHorizontal
-        }
+        val horizontalOffset = if (viewState.isLtr) bounds.left + viewState.eventPaddingHorizontal
+        else bounds.right - viewState.eventPaddingHorizontal
 
-        val verticalOffset = if (eventChip.event.isAllDay) {
-            (bounds.height() - textLayout.height) / 2f
-        } else {
-            viewState.eventPaddingVertical.toFloat()
-        }
+        val verticalOffset = if (eventChip.event.isAllDay) (bounds.height() - textLayout.height) / 2f
+        else viewState.eventPaddingVertical.toFloat()
 
         withTranslation(x = horizontalOffset, y = bounds.top + verticalOffset) {
             draw(textLayout)
+        }
+    }
+
+    private fun Canvas.drawEventIcon(
+        eventChip: EventChip,
+        icon: Bitmap
+    ) {
+        val bounds = eventChip.bounds
+
+        val horizontalOffset: Float = bounds.right - viewState.eventPaddingHorizontal - icon.width / 1.5F
+
+        val verticalOffset: Float = if (eventChip.event.isAllDay) (bounds.height() - icon.height) / 2f
+        else viewState.eventPaddingVertical.toFloat() + icon.height / 1.5F
+
+        withTranslation(x = horizontalOffset, y = bounds.bottom - verticalOffset) {
+            drawBitmap(icon, null, Rect(0, 0, 50, 50), null)
         }
     }
 

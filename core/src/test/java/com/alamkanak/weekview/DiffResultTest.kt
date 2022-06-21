@@ -5,12 +5,7 @@ import com.alamkanak.weekview.util.MockFactory
 import com.alamkanak.weekview.util.withDifferentId
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 
-@RunWith(RobolectricTestRunner::class)
-@Config(sdk = [27])
 class DiffResultTest {
 
     @Test
@@ -45,7 +40,7 @@ class DiffResultTest {
     fun `Updated entities are correctly recognized as new`() {
         val existingEntity = MockFactory.resolvedWeekViewEntity()
         val newEntity = existingEntity.createCopy(
-            endTime = existingEntity.startTime + Hours(2)
+            endTime = existingEntity.startTime.plusHours(2)
         )
 
         val result = DiffResult.calculateDiff(
@@ -61,7 +56,7 @@ class DiffResultTest {
     fun `New and updated entities are correctly recognized together`() {
         val existingEntity = MockFactory.resolvedWeekViewEntity()
         val updatedEntity = existingEntity.createCopy(
-            endTime = existingEntity.startTime + Hours(2)
+            endTime = existingEntity.startTime.plusHours(2)
         )
         val newEntity = MockFactory.resolvedWeekViewEntity()
 

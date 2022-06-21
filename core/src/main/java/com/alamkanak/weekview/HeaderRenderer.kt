@@ -1,17 +1,14 @@
 package com.alamkanak.weekview
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Rect
-import android.graphics.RectF
+import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.util.SparseArray
 import androidx.collection.ArrayMap
 import androidx.core.content.ContextCompat
-import java.util.Calendar
+import java.util.*
 import kotlin.math.roundToInt
 
 internal class HeaderRenderer(
@@ -21,7 +18,7 @@ internal class HeaderRenderer(
     onHeaderHeightChanged: () -> Unit
 ) : Renderer, DateFormatterDependent {
 
-    private val allDayEventLabels = ArrayMap<EventChip, StaticLayout>()
+    private val allDayEventLabels = ArrayMap<EventChip, Pair<StaticLayout, Bitmap?>>()
     private val dateLabelLayouts = SparseArray<StaticLayout>()
 
     private val headerUpdater = HeaderUpdater(
@@ -184,7 +181,7 @@ private class DateLabelsDrawer(
 
 private class AllDayEventsUpdater(
     private val viewState: ViewState,
-    private val eventsLabelLayouts: ArrayMap<EventChip, StaticLayout>,
+    private val eventsLabelLayouts: ArrayMap<EventChip, Pair<StaticLayout, Bitmap?>>,
     private val eventChipsCacheProvider: EventChipsCacheProvider
 ) : Updater {
 
@@ -262,7 +259,7 @@ private class AllDayEventsUpdater(
 
 internal class AllDayEventsDrawer(
     private val viewState: ViewState,
-    private val allDayEventLayouts: ArrayMap<EventChip, StaticLayout>
+    private val allDayEventLayouts: ArrayMap<EventChip, Pair<StaticLayout, Bitmap?>>
 ) : Drawer {
 
     private val eventChipDrawer = EventChipDrawer(viewState)
@@ -283,13 +280,13 @@ internal class AllDayEventsDrawer(
         }
     }
 
-    private fun Canvas.renderEventsHorizontally(events: List<Pair<EventChip, StaticLayout>>) {
-        for ((eventChip, textLayout) in events) {
-            eventChipDrawer.draw(eventChip, canvas = this, textLayout)
+    private fun Canvas.renderEventsHorizontally(events: List<Pair<EventChip, Pair<StaticLayout, Bitmap?>>>) {
+        for ((eventChip, layouts) in events) {
+            eventChipDrawer.draw(eventChip, canvas = this, layouts.first, layouts.second)
         }
     }
 
-    private fun Canvas.renderEventsVertically(events: List<Pair<EventChip, StaticLayout>>) {
+    private fun Canvas.renderEventsVertically(events: List<Pair<EventChip, Pair<StaticLayout, Bitmap?>>>) {
         // Un-hide all events. To prevent any click handler from mapping a click to a hidden event,
         // we set isHidden to true for all events that aren't shown in the collapsed state.
         events.forEach { it.first.isHidden = false }
@@ -297,11 +294,11 @@ internal class AllDayEventsDrawer(
         if (viewState.allDayEventsExpanded || events.size <= 2) {
             // Draw them all!
             for ((eventChip, textLayout) in events) {
-                eventChipDrawer.draw(eventChip, canvas = this, textLayout)
+                eventChipDrawer.draw(eventChip, canvas = this, textLayout.first, textLayout.second)
             }
         } else {
             val (firstEventChip, firstTextLayout) = events[0]
-            eventChipDrawer.draw(firstEventChip, canvas = this, firstTextLayout)
+            eventChipDrawer.draw(firstEventChip, canvas = this, firstTextLayout.first, firstTextLayout.second)
 
             val needsExpandInfo = events.size >= 2
             if (needsExpandInfo) {
@@ -309,7 +306,7 @@ internal class AllDayEventsDrawer(
                 events.drop(1).forEach { it.first.isHidden = true }
             } else {
                 val (secondEventChip, secondTextLayout) = events[1]
-                eventChipDrawer.draw(secondEventChip, canvas = this, secondTextLayout)
+                eventChipDrawer.draw(secondEventChip, canvas = this, secondTextLayout.first, secondTextLayout.second)
                 events.drop(2).forEach { it.first.isHidden = true }
             }
         }
@@ -331,9 +328,9 @@ internal class AllDayEventsDrawer(
         }
 
         val y = priorEventChip.bounds.bottom +
-            viewState.eventMarginVertical +
-            viewState.eventPaddingVertical +
-            textPaint.textSize
+                viewState.eventMarginVertical +
+                viewState.eventPaddingVertical +
+                textPaint.textSize
 
         drawText(text, x, y, textPaint)
     }

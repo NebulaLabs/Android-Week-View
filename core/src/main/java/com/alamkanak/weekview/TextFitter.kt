@@ -1,5 +1,6 @@
 package com.alamkanak.weekview
 
+import android.graphics.Bitmap
 import android.text.SpannableStringBuilder
 import android.text.StaticLayout
 
@@ -9,24 +10,25 @@ internal class TextFitter(
 
     private val spannableStringBuilder = SpannableStringBuilder()
 
-    fun fitAllDayEvent(eventChip: EventChip): StaticLayout {
+    fun fitAllDayEvent(eventChip: EventChip): Pair<StaticLayout, Bitmap?> {
         val textPaint = viewState.getTextPaint(eventChip.event)
-        return eventChip.getText(includeSubtitle = false).toTextLayout(textPaint, width = Int.MAX_VALUE)
+        return Pair(eventChip.getText(includeSubtitle = false).toTextLayout(textPaint, width = Int.MAX_VALUE), eventChip.event.icon)
     }
 
-    fun fitSingleEvent(eventChip: EventChip, availableWidth: Int, availableHeight: Int): StaticLayout {
+    fun fitSingleEvent(eventChip: EventChip, availableWidth: Int, availableHeight: Int): Pair<StaticLayout, Bitmap?> {
         return eventChip.fitText(availableWidth, availableHeight)
     }
 
-    private fun EventChip.fitText(availableWidth: Int, availableHeight: Int): StaticLayout {
+    private fun EventChip.fitText(availableWidth: Int, availableHeight: Int): Pair<StaticLayout, Bitmap?> {
         val textPaint = viewState.getTextPaint(event)
 
         var text = getText(includeSubtitle = true)
+        val icon = event.icon
         var textLayout = text.toTextLayout(textPaint, width = availableWidth)
 
         val fitsCompletely = textLayout.height <= availableHeight
         if (fitsCompletely) {
-            return textLayout
+            return Pair(textLayout, icon)
         }
 
         while (textLayout.height > availableHeight && textLayout.lineCount > 1) {
@@ -43,7 +45,7 @@ internal class TextFitter(
             textLayout = text.toTextLayout(textPaint, width = Int.MAX_VALUE)
         }
 
-        return textLayout
+        return Pair(textLayout, icon)
     }
 
     private fun EventChip.getText(includeSubtitle: Boolean): CharSequence {

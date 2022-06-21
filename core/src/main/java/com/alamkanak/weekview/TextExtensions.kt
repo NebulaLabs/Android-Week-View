@@ -2,11 +2,7 @@ package com.alamkanak.weekview
 
 import android.graphics.Paint
 import android.os.Build
-import android.text.Layout
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.text.StaticLayout
-import android.text.TextPaint
+import android.text.*
 import android.text.style.TypefaceSpan
 import com.alamkanak.weekview.base.TextProcessors
 

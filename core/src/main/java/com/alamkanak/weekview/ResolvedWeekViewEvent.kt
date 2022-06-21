@@ -1,6 +1,7 @@
 package com.alamkanak.weekview
 
 import android.content.Context
+import android.graphics.Bitmap
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -13,6 +14,8 @@ internal sealed class ResolvedWeekViewEntity {
     internal abstract val endTime: Calendar
     internal abstract val isAllDay: Boolean
     internal abstract val style: Style
+    internal abstract val icon: Bitmap?
+
 
     internal val period: Period by lazy {
         Period.fromDate(startTime)
@@ -26,6 +29,7 @@ internal sealed class ResolvedWeekViewEntity {
         override val subtitle: CharSequence?,
         override val isAllDay: Boolean,
         override val style: Style,
+        override val icon: Bitmap?,
         val data: T?
     ) : ResolvedWeekViewEntity()
 
@@ -35,7 +39,8 @@ internal sealed class ResolvedWeekViewEntity {
         override val subtitle: CharSequence?,
         override val startTime: Calendar,
         override val endTime: Calendar,
-        override val style: Style
+        override val style: Style,
+        override val icon: Bitmap?
     ) : ResolvedWeekViewEntity() {
         override val isAllDay: Boolean = false
     }
@@ -111,6 +116,7 @@ internal fun WeekViewEntity.resolve(
         subtitle = subtitleResource?.resolve(context, semibold = false)?.processed,
         isAllDay = isAllDay,
         style = style.resolve(context),
+        icon = icon,
         data = data
     )
     is WeekViewEntity.BlockedTime -> ResolvedWeekViewEntity.BlockedTime(
@@ -119,7 +125,8 @@ internal fun WeekViewEntity.resolve(
         subtitle = subtitleResource?.resolve(context, semibold = false)?.processed,
         startTime = startTime.withLocalTimeZone(),
         endTime = endTime.withLocalTimeZone(),
-        style = style.resolve(context)
+        style = style.resolve(context),
+        icon = icon
     )
 }
 

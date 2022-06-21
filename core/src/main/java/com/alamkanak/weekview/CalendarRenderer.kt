@@ -1,5 +1,6 @@
 package com.alamkanak.weekview
 
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
@@ -15,7 +16,7 @@ internal class CalendarRenderer(
     eventChipsCacheProvider: EventChipsCacheProvider
 ) : Renderer {
 
-    private val singleEventLabels = ArrayMap<String, StaticLayout>()
+    private val singleEventLabels = ArrayMap<String, Pair<StaticLayout, Bitmap?>>()
     private val eventsUpdater = SingleEventsUpdater(viewState, eventChipsCacheProvider, singleEventLabels)
 
     // Be careful when changing the order of the drawers, as that might cause
@@ -39,7 +40,7 @@ internal class CalendarRenderer(
 private class SingleEventsUpdater(
     private val viewState: ViewState,
     private val chipsCacheProvider: EventChipsCacheProvider,
-    private val eventLabels: ArrayMap<String, StaticLayout>
+    private val eventLabels: ArrayMap<String, Pair<StaticLayout, Bitmap?>>
 ) : Updater {
 
     private val boundsCalculator = EventChipBoundsCalculator(viewState)
@@ -222,7 +223,7 @@ private class BackgroundGridDrawer(
 private class SingleEventsDrawer(
     private val viewState: ViewState,
     private val chipsCacheProvider: EventChipsCacheProvider,
-    private val eventLabels: ArrayMap<String, StaticLayout>
+    private val eventLabels: ArrayMap<String, Pair<StaticLayout, Bitmap?>>
 ) : Drawer {
 
     private val eventChipDrawer = EventChipDrawer(viewState)
@@ -249,8 +250,10 @@ private class SingleEventsDrawer(
         }
 
         for (eventChip in sortedEventChips) {
-            val textLayout = eventLabels[eventChip.id]
-            eventChipDrawer.draw(eventChip, canvas = this, textLayout)
+            val layouts = eventLabels[eventChip.id]
+            val textLayout = layouts?.first
+            val iconLayout = layouts?.second
+            eventChipDrawer.draw(eventChip, canvas = this, textLayout, iconLayout)
         }
     }
 }

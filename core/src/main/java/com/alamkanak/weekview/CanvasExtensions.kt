@@ -4,6 +4,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
 import android.text.StaticLayout
+import android.widget.ImageView
 
 internal fun Canvas.withTranslation(x: Float, y: Float, block: Canvas.() -> Unit) {
     save()
@@ -14,6 +15,10 @@ internal fun Canvas.withTranslation(x: Float, y: Float, block: Canvas.() -> Unit
 
 internal fun Canvas.draw(staticLayout: StaticLayout) {
     staticLayout.draw(this)
+}
+
+internal fun Canvas.draw(imageView: ImageView) {
+    imageView.draw(this)
 }
 
 internal fun Canvas.drawVerticalLine(

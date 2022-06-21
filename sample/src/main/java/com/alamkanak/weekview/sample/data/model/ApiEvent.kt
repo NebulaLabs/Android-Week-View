@@ -1,5 +1,6 @@
 package com.alamkanak.weekview.sample.data.model
 
+import android.graphics.Bitmap
 import android.graphics.Color
 import com.google.gson.annotations.SerializedName
 import java.time.DateTimeException
@@ -18,7 +19,8 @@ data class ApiEvent(
     @SerializedName("duration") val duration: Int,
     @SerializedName("color") val color: String,
     @SerializedName("is_canceled") val isCanceled: Boolean,
-    @SerializedName("is_all_day") val isAllDay: Boolean
+    @SerializedName("is_all_day") val isAllDay: Boolean,
+    @SerializedName("icon") val icon: Bitmap?
 ) : ApiResult {
 
     override fun toCalendarEntity(yearMonth: YearMonth, index: Int): CalendarEntity? {
@@ -34,7 +36,8 @@ data class ApiEvent(
                 endTime = endDateTime,
                 color = Color.parseColor(color),
                 isAllDay = isAllDay,
-                isCanceled = isCanceled
+                isCanceled = isCanceled,
+                icon = icon
             )
         } catch (e: DateTimeException) {
             null

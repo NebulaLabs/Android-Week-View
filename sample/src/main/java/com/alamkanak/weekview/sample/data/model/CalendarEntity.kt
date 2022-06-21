@@ -1,5 +1,6 @@
 package com.alamkanak.weekview.sample.data.model
 
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -21,7 +22,9 @@ sealed class CalendarEntity {
         val location: CharSequence,
         val color: Int,
         val isAllDay: Boolean,
-        val isCanceled: Boolean
+        val isCanceled: Boolean,
+        /** Ideally, this bitmap must have a size of 75x75, and a low memory footprint */
+        val icon: Bitmap?
     ) : CalendarEntity()
 
     data class BlockedTimeSlot(
@@ -72,6 +75,7 @@ fun CalendarEntity.Event.toWeekViewEntity(): WeekViewEntity {
         .setSubtitle(subtitle)
         .setAllDay(isAllDay)
         .setStyle(style)
+        .setIcon(icon)
         .build()
 }
 

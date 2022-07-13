@@ -1,6 +1,7 @@
 package com.alamkanak.weekview.sample.data.model
 
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StrikethroughSpan
@@ -74,7 +75,7 @@ fun CalendarEntity.Event.toWeekViewEntity(): WeekViewEntity {
         .setSubtitle(subtitle)
         .setAllDay(isAllDay)
         .setStyle(style)
-        .setIcon(icon?.getCircledBitmap())
+        .setIcon(icon)
         .build()
 }
 
@@ -90,18 +91,4 @@ fun CalendarEntity.BlockedTimeSlot.toWeekViewEntity(): WeekViewEntity {
         .setEndTime(endTime)
         .setStyle(style)
         .build()
-}
-
-/** Copied from here: [Gist](https://gist.github.com/jewelzqiu/c0633c9f3089677ecf85?permalink_comment_id=3587995#gistcomment-3587995) */
-private fun Bitmap.getCircledBitmap(): Bitmap {
-    val output = Bitmap.createBitmap(this.width, this.height, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(output)
-    val paint = Paint()
-    val rect = Rect(0, 0, this.width, this.height)
-    paint.isAntiAlias = true
-    canvas.drawARGB(0, 0, 0, 0)
-    canvas.drawCircle(this.width / 2f, this.height / 2f, this.width / 2f, paint)
-    paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
-    canvas.drawBitmap(this, rect, rect, paint)
-    return output
 }

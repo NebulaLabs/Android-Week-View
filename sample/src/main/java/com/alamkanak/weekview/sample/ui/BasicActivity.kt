@@ -55,7 +55,9 @@ class BasicActivity : AppCompatActivity() {
             adapter.submitList(viewState.entities.map {
                 when (it) {
                     /* Add a drawable to the Events */
-                    is CalendarEntity.Event -> it.copy(icon = AppCompatResources.getDrawable(this, R.drawable.onexp_logo_light)?.toBitmap())
+                    is CalendarEntity.Event -> it.copy(
+                        icon = AppCompatResources.getDrawable(this, R.drawable.onexp_logo_light)?.toBitmap()?.toCircledBitmap()
+                    )
                     is CalendarEntity.BlockedTimeSlot -> it
                 }
             })

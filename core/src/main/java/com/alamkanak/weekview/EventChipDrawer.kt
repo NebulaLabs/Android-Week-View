@@ -3,6 +3,7 @@ package com.alamkanak.weekview
 import android.graphics.*
 import android.text.StaticLayout
 
+
 internal class EventChipDrawer(
     private val viewState: ViewState
 ) {
@@ -145,19 +146,17 @@ internal class EventChipDrawer(
         }
     }
 
-    private fun Canvas.drawEventIcon(
-        eventChip: EventChip,
-        icon: Bitmap
-    ) {
+    private fun Canvas.drawEventIcon(eventChip: EventChip, icon: Bitmap) {
         val bounds = eventChip.bounds
+        val iconDimensions = 35F
 
-        val horizontalOffset: Float = bounds.right - viewState.eventPaddingHorizontal - icon.width / 1.5F
+        val horizontalOffset: Float = bounds.right - viewState.eventPaddingHorizontal / 2 - iconDimensions
 
         val verticalOffset: Float = if (eventChip.event.isAllDay) (bounds.height() - icon.height) / 2f
-        else viewState.eventPaddingVertical.toFloat() + icon.height / 1.5F
+        else viewState.eventPaddingVertical.toFloat() / 2 + iconDimensions
 
         withTranslation(x = horizontalOffset, y = bounds.bottom - verticalOffset) {
-            drawBitmap(icon, null, Rect(0, 0, 50, 50), null)
+            drawBitmap(icon, null, RectF(0F, 0F, iconDimensions, iconDimensions), null)
         }
     }
 

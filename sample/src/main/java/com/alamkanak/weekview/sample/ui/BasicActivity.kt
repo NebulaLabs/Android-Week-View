@@ -1,6 +1,5 @@
 package com.alamkanak.weekview.sample.ui
 
-import android.graphics.Bitmap
 import android.graphics.RectF
 import android.os.Bundle
 import android.util.Log
@@ -56,9 +55,7 @@ class BasicActivity : AppCompatActivity() {
             adapter.submitList(viewState.entities.map {
                 when (it) {
                     /* Add a drawable to the Events */
-                    is CalendarEntity.Event -> it.copy(
-                        icon = AppCompatResources.getDrawable(this, R.drawable.onexp_logo)?.toBitmap(75, 75, Bitmap.Config.RGB_565)
-                    )
+                    is CalendarEntity.Event -> it.copy(icon = AppCompatResources.getDrawable(this, R.drawable.onexp_logo_light)?.toBitmap())
                     is CalendarEntity.BlockedTimeSlot -> it
                 }
             })

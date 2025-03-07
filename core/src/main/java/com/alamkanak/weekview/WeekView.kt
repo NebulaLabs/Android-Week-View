@@ -1468,13 +1468,15 @@ class WeekView @JvmOverloads constructor(
 
         @Suppress("UNCHECKED_CAST")
         private fun findEventData(id: Long, startTime: Calendar, endTime: Calendar): T? {
-            val match = eventsCache[id] as? ResolvedWeekViewEntity.Event<T>
-            return if (match != null && match.startTime.timeInMillis >= startTime.timeInMillis
-                && match.endTime.timeInMillis <= endTime.timeInMillis) {
-                match.data
-            } else {
-                null
-            }
+            return eventsCache.allEvents
+                .filterIsInstance<ResolvedWeekViewEntity.Event<*>>()
+                .filter { event ->
+                    event.id == id &&
+                            event.startTime.timeInMillis <= endTime.timeInMillis &&
+                            event.endTime.timeInMillis >= startTime.timeInMillis
+                }
+                .mapNotNull { it.data as? T }
+                .firstOrNull()
         }
 
         /**

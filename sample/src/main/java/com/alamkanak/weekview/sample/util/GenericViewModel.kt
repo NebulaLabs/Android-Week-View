@@ -83,7 +83,7 @@ class GenericViewModel(
 
     class Factory(private val eventsRepository: EventsRepository) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(GenericViewModel::class.java)) {
                 return GenericViewModel(eventsRepository) as T
             }

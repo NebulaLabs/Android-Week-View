@@ -1417,7 +1417,7 @@ class WeekView @JvmOverloads constructor(
 
         internal fun handleClick(x: Float, y: Float): Boolean {
             val eventChip = findHitEvent(x, y) ?: return false
-            val data = findEventData(id = eventChip.eventId) ?: return false
+            val data = findEventData(id = eventChip.eventId, startTime = eventChip.startTime, endTime = eventChip.endTime) ?: return false
             onEventClick(data, eventChip.bounds)
             onEventClick(data)
             return true
@@ -1425,7 +1425,7 @@ class WeekView @JvmOverloads constructor(
 
         internal fun handleLongClick(x: Float, y: Float): LongClickResult? {
             val eventChip = findHitEvent(x, y) ?: return null
-            val data = findEventData(id = eventChip.eventId) ?: return null
+            val data = findEventData(id = eventChip.eventId, startTime = eventChip.startTime, endTime = eventChip.endTime) ?: return null
             val handled = onEventLongClick(data, eventChip.bounds)
             return LongClickResult(eventChip = eventChip, handled = handled)
         }
@@ -1464,6 +1464,17 @@ class WeekView @JvmOverloads constructor(
         private fun findEventData(id: Long): T? {
             val match = eventsCache[id]
             return (match as? ResolvedWeekViewEntity.Event<T>)?.data
+        }
+
+        @Suppress("UNCHECKED_CAST")
+        private fun findEventData(id: Long, startTime: Calendar, endTime: Calendar): T? {
+            val match = eventsCache[id] as? ResolvedWeekViewEntity.Event<T>
+            return if (match != null && match.startTime.timeInMillis >= startTime.timeInMillis
+                && match.endTime.timeInMillis <= endTime.timeInMillis) {
+                match.data
+            } else {
+                null
+            }
         }
 
         /**
